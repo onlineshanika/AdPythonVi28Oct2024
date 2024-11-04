@@ -1,0 +1,35 @@
+Assignment: Database and Table Creation with Data Insertion in Python
+Objective: In this assignment, you will create a new MySQL database called school_db with a table called students. The table will store data about students, including their student_id (int), name (varchar), age (int), and grade (varchar). You will then use Python to connect to the database, insert some sample data, and retrieve it.
+
+Instructions
+Create the Database and Table in MySQL
+
+Run the following SQL script in your MySQL environment to create the school_db database and the students table.
+
+
+-- Step 1: Create a new database
+CREATE DATABASE school_db;
+
+-- Step 2: Use the created database
+USE school_db;
+
+-- Step 3: Create the students table
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT,
+    grade VARCHAR(10)
+);
+
+Insert Sample Data into the Table
+
+After creating the database and table, run the following SQL script to insert sample data into the students table.
+
+-- Insert sample records into students table
+INSERT INTO students (student_id, name, age, grade) VALUES (1, 'Alice Johnson', 15, '10th');
+INSERT INTO students (student_id, name, age, grade) VALUES (2, 'Bob Smith', 16, '11th');
+INSERT INTO students (student_id, name, age, grade) VALUES (3, 'Carol White', 15, '10th');
+INSERT INTO students (student_id, name, age, grade) VALUES (4, 'David Brown', 17, '12th');
+Python Code for Database Operations
+
+Use the following Python script to connect to the school_db database, retrieve data from the students table, and display the results.
