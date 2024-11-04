@@ -1,0 +1,84 @@
+Open Terminal
+
+To login to database,
+
+mysql -u root -pSimplilearn@123
+
+To check available databases,
+
+show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+To create a new DB,
+
+create database hr;
+Query OK, 1 row affected (0.01 sec)
+
+
+To Confirm if DB created successfully,
+
+show databases;
++--------------------+
+| Database           |
++--------------------+
+| hr                 |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+
+Get inside DB to create Tables
+
+use hr;
+Database changed
+
+show tables;
+Empty set (0.01 sec)
+
+
+Create Table,
+
+create table employee
+(eid int,
+esal int);
+Query OK, 0 rows affected (0.17 sec)
+
+show tables;
++--------------+
+| Tables_in_hr |
++--------------+
+| employee     |
++--------------+
+1 row in set (0.00 sec)
+
+select * from employee;
+Empty set (0.00 sec)
+
+
+Insert data and view contents,
+
+insert into employee values (1,1000);
+Query OK, 1 row affected (0.00 sec)
+
+insert into employee values (2,2000);
+Query OK, 1 row affected (0.01 sec)
+
+select * from employee;
++------+------+
+| eid  | esal |
++------+------+
+|    1 | 1000 |
+|    2 | 2000 |
++------+------+
+2 rows in set (0.00 sec)
