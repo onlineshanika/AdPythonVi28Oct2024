@@ -255,3 +255,45 @@ class Item(models.Model):
     item_price=models.IntegerField()
 ===========================================================================================
 
+Assignment 1
+============
+
+
+Create a new Django Project named library
+Create a new app named books
+Ensure books app is accessible via link http://127.0.0.1:8000/mybooks
+Create Table for book app named bookdb with following column names
+	bookName
+	authorName
+	price
+	bookSynopsis
+Ensure bookdb is accessible via admin page
+Insert 5 books via admin page UI
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
