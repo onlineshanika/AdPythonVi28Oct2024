@@ -109,3 +109,21 @@ urlpatterns = [
 7. Try accessing app using the following link the browser
 
 	http://127.0.0.1:8000/food
+
+8. Add items page in existing food app
+
+	- inside views.py add logic for items
+
+		def item(request):
+			return HttpResponse("This is item page")
+
+	- inside urls.py in food app, add the url info for item page
+
+		path('item/' , views.item, name="item")
+
+	- Save all changes and check if the link is working
+
+		http://127.0.0.1:8000/food/item
+
+
+This is item page
