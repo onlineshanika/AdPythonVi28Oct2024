@@ -155,7 +155,7 @@ class Item(models.Model):
 settings.py
 
 INSTALLED_APPS = [
-	food.apps.FoodConfig,
+	'food.apps.FoodConfig',
 	...
 ]
 
@@ -218,6 +218,8 @@ Step1: Create superuser
 
 	python manage.py createsuperuser
 
+	python manage.py runserver
+
 Step2: Access Admin page
 
 	http://127.0.0.1:8000/admin
@@ -234,4 +236,22 @@ from .models import Item
 admin.site.register(Item)
 
 Step4: Refresh admin page and check if food app is accessible.
+
+===================================================================================
+
+To change the view of item data
+
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+
+    def __str__(self):
+        return self.item_name+" "+str(self.item_price)
+
+    item_name= models.CharField(max_length=200) 
+    item_desc=models.CharField(max_length=200) 
+    item_price=models.IntegerField()
+===========================================================================================
 
