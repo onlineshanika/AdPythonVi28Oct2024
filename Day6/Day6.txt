@@ -58,6 +58,9 @@ View -------- Holds the Business logic to display/show results
 Templates
 
 
+When it comes to dynamic data handling in View page, in Django we have a special language to create template page called DTL(Django Template Language)
+
+
 
 Lab2: Creating templates folder
 ==================================
@@ -85,6 +88,47 @@ def index(request):
 
 
 
+Lab3: Creating and using Context Variable
+===========================================
+
+context variable is a dictionary object
+
+1. Update views.py
+views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Item
+
+# Create your views here.
+
+def index(request):
+    context = {
+        'name' : 'Prashant',
+        'messages' : ['Welcome to Django Template Language', ' Test1', 'Test2']
+    }
+    return render(request, 'food/index.html', context)
+
+
+2. Update index.html
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Welcome {{ name }}</title>
+</head>
+<body>
+    <h1>This is a sample page</h1>
+    <ul>
+        {% for message in messages %}
+        <li> {{ message }} </li>
+    {% endfor %}
+
+    </ul>
+    
+</body>
+</html>
 
 
 
