@@ -133,6 +133,62 @@ index.html
 
 
 
+Lab4: Accessing elements dynamically
+======================================
+
+Demo1: Using variable values from URL
+
+Step1: Update views.py
+views.py
+
+from django.shortcuts import render,redirect
+from django.http import HttpResponse
+from .models import Item
+from django.template import loader
+
+
+
+def detail(request, item_id):
+	return HttpResponse("This is item no : %s" % item_id)
+
+
+Step2: Update urls.py of food app
+urls.py (food app)
+
+from django.urls import path
+from . import views
+
+urlpatterns=[
+    #http://127.0.0.1:8000/food
+    path('',views.index, name="index"),
+    #http://127.0.0.1:8000/food/items
+    path('items/',views.item, name="items"),
+    #http://127.0.0.1:8000/food/1
+    path('<int:item_id>',views.detail, name="detail")
+]
+
+
+
+Demo2 : Fetching relevant record from db object
+
+1. Create a new template html inside templates/food/detail.html
+
+detail.html
+
+<h1>{{ itemDetails.item_name }}</h1>
+<h2>{{ itemDetails.item_desc }}</h2>
+<h3>{{ itemDetails.item_price }}</h3>
+
+2. Update views.py to fetch data from item model.
+
+views.py
+
+def detail(request,item_id):
+    item = Item.objects.get(pk=item_id) #select * from item where id=item_id
+    context = {
+        'itemDetails' : item,
+    }
+    return render(request, 'food/detail.html', context)
 
 
 
