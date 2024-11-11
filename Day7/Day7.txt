@@ -157,3 +157,39 @@ Step3: Edit detail.html
 
 Step4: Check and confirm if navigation bar is visible
 
+
+
+Adding Image Field in Existing Table(Model)
+============================================
+
+Step1: Delete all extra fields from models.py if applicable and perfrom makemigration
+
+python manage.py makemigrations food
+python manage.py migrate
+
+Step2: Add a new field called item_image
+
+from django.db import models
+
+# Create your models here.
+
+class Item(models.Model):
+
+    def __str__(self):
+        result = str(self.item_name)
+        return result
+
+    item_name = models.CharField(max_length=200)
+    item_desc = models.CharField(max_length=200)
+    item_price = models.IntegerField()
+    item_image = models.CharField(max_length=900, default="https://i.pinimg.com/originals/fd/80/ec/fd80ecec48eba2a9adb76e4133905879.png")
+    
+
+Step3: Migrate DB
+python manage.py makemigrations food
+python manage.py migrate
+
+Step4: Check in Admin page if changes are applied successfully
+
+
+
