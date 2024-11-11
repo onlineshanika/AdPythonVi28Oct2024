@@ -236,6 +236,7 @@ Step6: Update index.html
 
 {% endblock %}
 
+
 Step7: Update details.html
 
 {% extends 'food/base.html' %}
@@ -255,3 +256,29 @@ Step7: Update details.html
 </div>
 
 {% endblock %}
+
+Step8: views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Item
+
+# Create your views here.
+
+def index(request):
+    item = Item.objects.all()
+    context = {
+           'messages': item
+    }
+    return render(request, 'food/index.html', context=context)
+
+def item(request):
+    return HttpResponse("This is Items Page")
+
+def detail(request,item_id):
+    item = Item.objects.get(pk=item_id)
+    context = {
+        'itemDetails' : item,
+    }
+    return render(request, 'food/detail.html', context=context)
+
