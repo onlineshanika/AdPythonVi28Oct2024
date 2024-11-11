@@ -282,3 +282,119 @@ def detail(request,item_id):
     }
     return render(request, 'food/detail.html', context=context)
 
+
+Forms in Django
+=================
+
+Adding new item in food menu
+-----------------------------------
+
+1. urls.py (food)
+
+from django.urls import path
+from . import views
+
+app_name='food'
+urlpatterns=[
+    path('',views.index, name="index"),
+    path('item',views.item, name="items"),
+    path('<int:item_id>',views.detail, name="detail"),
+    path("add",views.create_item, name="create_item"),
+]
+
+
+
+2. item-form.html inside templates/food
+
+{% extends 'food/base.html' %}
+
+{% block body %}
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}
+
+3. forms.py inside food folder
+
+from django  import forms
+from .models import Item
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['item_name','item_desc','item_price','item_image']
+
+4. views.py of food 
+
+from django.shortcuts import render,redirect
+from django.http import HttpResponse
+from .models import Item
+
+from .forms import ItemForm
+
+# Create your views here.
+
+def index(request):
+    item = Item.objects.all()
+    context = {
+           'messages': item
+    }
+    return render(request, 'food/index.html', context=context)
+
+def item(request):
+    return HttpResponse("This is Items Page")
+
+def detail(request,item_id):
+    item = Item.objects.get(pk=item_id)
+    context = {
+        'itemDetails' : item,
+    }
+    return render(request, 'food/detail.html', context=context)
+
+def create_item(request):
+    form = ItemForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('food:index')
+
+    return render(request, 'food/item-form.html', {'form':form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
