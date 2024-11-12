@@ -99,7 +99,7 @@ def register(request):
 
 {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ messages.tags }}">
+        <div class="alert alert-{{ message.tags }}">
             {{ message }}
         </div>
             
