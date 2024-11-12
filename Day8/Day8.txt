@@ -299,3 +299,30 @@ Go to base.html and add the following
     </nav>
 
 
+Restrictinig Routes
+===================
+
+
+1. Open views.py in food app and do the following:
+
+from django.contrib.auth.decorators import login_required
+
+
+
+@login_required
+def create_item(request):
+    form = ItemForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('food:index')
+
+    return render(request, 'food/item-form.html', {'form':form})
+
+2. Go to settings.py of main app(mysite) --- This is to inform Django the location of login page
+
+LOGIN_URL = 'login'
+
+
+
+
