@@ -239,4 +239,63 @@ LOGIN_REDIRECT_URL = 'food:index'
 
 
 
+Redirect RegisteredUsers to LoginPage and Logout Functionality
+=====================================================================
+
+Modify views.py in users app to redirect RegisteredUsers to login functionality
+
+
+from django.shortcuts import render,redirect
+from django.contrib import messages
+from .forms import RegisterForm
+
+# Create your views here.
+
+def register(request):
+    if request.method == 'POST':
+        form=RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request,f'Welcome {username}, Your account is created.')
+            return redirect('login')
+    else:
+        
+        form= RegisterForm()
+    return render(request, 'users/register.html', {'form': form})
+	
+	
+For logout functionality
+
+Create logout template
+
+templates/users/logout.html
+ 
+ <h1>Logged out Successfully</h1>
+ 
+ 
+ 
+http://127.0.0.1:8000/logout
+
+
+Adding Login Option to Navbar
+=============================
+
+Go to base.html and add the following
+
+<nav class="navbar navbar-dark bg-dark">
+        <a href="#" class="navbar-brand">Food App</a>
+
+        <div class="navbar">
+            <a class="nav-item  nav-link" href="{% url 'food:create_item' %}">Add Item</a>
+            <a class="nav-item  nav-link" href="#">Delete Item</a>
+            <a class="nav-item  nav-link" href="#">View Item</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
 
