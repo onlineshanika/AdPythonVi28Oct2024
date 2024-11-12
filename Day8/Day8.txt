@@ -302,6 +302,9 @@ Go to base.html and add the following
 Restrictinig Routes
 ===================
 
+0. Assign url for Add Item in base.html 
+
+<a class="nav-item  nav-link" href="{% url 'food:create_item' %}">Add Item</a>
 
 1. Open views.py in food app and do the following:
 
