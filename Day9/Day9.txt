@@ -47,7 +47,7 @@ DATABASES = {
 
  Define the Model (DB)
 
-In employee_app/models.py, define a model for the employee:
+In employeeapp/models.py, define a model for the employee:
 
 from django.db import models
 
@@ -67,10 +67,10 @@ class Employee(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-Step4: Install employee_app via settings.py of employee_project
+Step4: Install employeeapp via settings.py of employee_project
 
 INSTALLED_APPS = [
-    'employee_app.apps.EmployeeappConfig',
+    'employeeapp.apps.EmployeeappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,7 +86,7 @@ python manage.py migrate
 
 
 Step6: Creating Forms
-In employee_app/forms.py, create forms for submitting new employees and searching by first name:
+In employeeapp/forms.py, create forms for submitting new employees and searching by first name:
 
 from django import forms
 from .models import Employee
@@ -101,7 +101,7 @@ class SearchForm(forms.Form):
 
 
 Step7: Creating Views
-In employee_app/views.py, create views to handle form submissions and searches:
+In employeeapp/views.py, create views to handle form submissions and searches:
 
 from django.shortcuts import render, redirect
 from .models import Employee
@@ -115,7 +115,7 @@ def add_employee(request):
             return redirect('add_employee')
     else:
         form = EmployeeForm()
-    return render(request, 'employee_app/add_employee.html', {'form': form})
+    return render(request, 'employeeapp/add_employee.html', {'form': form})
 
 def search_employee(request):
     employees = None
@@ -126,7 +126,7 @@ def search_employee(request):
             employees = Employee.objects.filter(first_name__icontains=first_name)
     else:
         form = SearchForm()
-    return render(request, 'employee_app/search_employee.html', {'form': form, 'employees': employees})
+    return render(request, 'employeeapp/search_employee.html', {'form': form, 'employees': employees})
 
 
 Step8: Configuring URLs
@@ -142,7 +142,7 @@ urlpatterns = [
 
 
 
-Then, in employee_app/, create a file named urls.py and define your app-specific URLs:
+Then, in employeeapp/, create a file named urls.py and define your app-specific URLs:
 
 from django.urls import path
 from .views import add_employee, search_employee
@@ -154,7 +154,7 @@ urlpatterns = [
 
 
 Step9: Creating Templates
-Create a directory named templates/employee_app inside employee_app folder, and then create add_employee.html and search_employee.html inside the templates directory. 
+Create a directory named templates/employeeapp inside employeeapp folder, and then create add_employee.html and search_employee.html inside the templates directory. 
 
 Here's a basic example for add_employee.html:
 
