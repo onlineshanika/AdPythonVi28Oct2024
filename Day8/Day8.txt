@@ -1,0 +1,331 @@
+Advanced Python Programming
+Trainer: Prashant Nair
+=======================================================================================================================================
+
+Authentication in Django
+	- Creating Registration Form
+	- Adding Success Message
+	- Saving Data from registration form
+	- Customizing Registration form
+	- Logging in Users
+	- Redirecting Registered Users
+	- Logout Functionality
+	- Adding Login Option to Navbar
+	- Restricting Routes (Restricting non registered users to access functionality)
+
+
+
+Creating Registration form for User Creation
+=============================================
+
+1. Initially for authentication , it is recommended to create a dedicated app for user authentication and authorization. To create an app, open terminal and perform the following command
+
+	django-admin startapp users
+	
+2. Go to apps.py in users app and copy name of the class (UsersConfig) and register the same in the INSTALLED APPS
+
+	settings.py (in mysite)
+	
+	INSTALLED_APPS = [
+		'users.apps.UsersConfig',
+		...
+	]
+
+3. Create views for User using views.py in Users app. This view will hold inbuilt Authentication Form which shall be used to register the user
+
+	
+from django.shortcuts import render,redirect
+from django.contrib.auth.forms import UserCreationForm
+
+def register(request):
+	form = UserCreationForm()
+	return render(request,'users/register.html',{'form':form})
+	
+
+4. Lets create a template for user reg form. Create templates directory and create register.html as shown in structure below:
+
+	templates/users/register.html
+	
+	<form method="POST">
+		{% csrf_token %}
+		{{ form }}
+		<button type="submit">Signup</button>
+		
+	</form>
+
+5. Create URL pattern directly in mysite's urls.py
+
+urls.py (in mysite)
+
+from django.contrib import admin
+from django.urls import path,include
+from users import views as user_views
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("food/",include('food.urls')),
+    path("register/", user_views.register, name='register'),
+]
+
+6. Visit and check if everything working fine ---------> http://127.0.0.1:8000/register
+
+
+Right now we just createed form. We are neither confirming user that its created nor its registered/saved
+
+
+Adding Success Message
+========================
+Lets go ahead and apply code to use POST method to save data and display success message
+
+1. Go to views.py in users app
+	
+from django.contrib import messages
+from django.shortcuts import render,redirect
+from django.contrib.auth.forms import UserCreationForm
+
+def register(request):
+    if request.method == 'POST':
+	form = UserCreationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            messages.success(request,f'Welcome {username}, Your account is created.')
+            return redirect('food:index')
+    else:
+        form= UserCreationForm()
+
+    return render(request, 'users/register.html', {'form': form})
+	
+2. Go to base.html in food app and add the following code below nav bar code
+
+{% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+            
+        {% endfor %}
+{% endif %}
+
+-------------------------------------------------------------------------------------------------------------
+Note --- for messages error
+
+Edit the following
+
+1. views.py in food app
+
+def index(request):
+    itemList = Item.objects.all()
+    context = {
+        'name' : 'Prashant',
+        'messages1' : itemList
+    }
+    return render(request, 'food/index.html', context)
+
+
+2. index.html of food app
+
+{% for item in messages1 %}
+
+--------------------------------------------------------------------------------------------------------------
+
+Saving Data from registration form
+======================================
+
+Go to views.py in users app
+	
+from django.shortcuts import render,redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+
+# Create your views here.
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request,f'Welcome {username} ! Your account is created !')
+            return redirect('food:index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
+
+
+	
+To check if user registered, check admin page
+
+127.0.0.1:8000/admin
+Check users
+
+---------------------------------------------------------------------------------------------------------------
+Customizing Registration form
+==============================
+
+Lets add email address field in the registration form
+
+1. Create forms.py in users app
+
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+        
+
+
+2. Modify views.py in users app
+
+from django.shortcuts import render,redirect
+from django.contrib import messages
+from .forms import RegisterForm
+
+# Create your views here.
+
+def register(request):
+    if request.method == 'POST':
+        form=RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request,f'Welcome {username}, Your account is created.')
+            return redirect('food:index')
+    else:
+        
+        form= RegisterForm()
+    return render(request, 'users/register.html', {'form': form})
+
+
+
+
+Logging in Users (Implementing Login Functionality)
+========================================================
+
+1. Create URL pattern directly in mysite's urls.py
+
+urls.py (in mysite)
+
+from django.contrib import admin
+from django.urls import path,include
+from users import views as user_views
+from django.contrib.auth import views as authentication_views
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("food/",include('food.urls')),
+    path("register/", user_views.register, name='register'),
+	path("login/", authentication_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+	path("logout/", authentication_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+]
+
+2. Create login.html in templates folder of users app
+
+templates/users/login.html
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Login</button>
+</form>
+
+3. Go to settings.py of main app(mysite)
+
+LOGIN_REDIRECT_URL = 'food:index'
+
+
+
+Redirect RegisteredUsers to LoginPage and Logout Functionality
+=====================================================================
+
+Modify views.py in users app to redirect RegisteredUsers to login functionality
+
+
+from django.shortcuts import render,redirect
+from django.contrib import messages
+from .forms import RegisterForm
+
+# Create your views here.
+
+def register(request):
+    if request.method == 'POST':
+        form=RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request,f'Welcome {username}, Your account is created.')
+            return redirect('login')
+    else:
+        
+        form= RegisterForm()
+    return render(request, 'users/register.html', {'form': form})
+	
+	
+For logout functionality
+
+Create logout template
+
+templates/users/logout.html
+ 
+ <h1>Logged out Successfully</h1>
+ 
+ 
+ 
+http://127.0.0.1:8000/logout
+
+
+Adding Login Option to Navbar
+=============================
+
+Go to base.html and add the following
+
+<nav class="navbar navbar-dark bg-dark">
+        <a href="#" class="navbar-brand">Food App</a>
+
+        <div class="navbar">
+            <a class="nav-item  nav-link" href="{% url 'food:create_item' %}">Add Item</a>
+            <a class="nav-item  nav-link" href="#">Delete Item</a>
+            <a class="nav-item  nav-link" href="#">View Item</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+Restrictinig Routes
+===================
+
+0. Assign url for Add Item in base.html 
+
+<a class="nav-item  nav-link" href="{% url 'food:create_item' %}">Add Item</a>
+
+1. Open views.py in food app and do the following:
+
+from django.contrib.auth.decorators import login_required
+
+
+
+@login_required
+def create_item(request):
+    form = ItemForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('food:index')
+
+    return render(request, 'food/item-form.html', {'form':form})
+
+2. Go to settings.py of main app(mysite) --- This is to inform Django the location of login page
+
+LOGIN_URL = 'login'
+
+
+
+
